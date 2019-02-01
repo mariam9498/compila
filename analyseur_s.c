@@ -659,6 +659,65 @@ bool _condition(typetoken t){
 
 	return result;	
 }
+bool _multdiv(){
+	bool result;
+	if(_aux()){
+		result=true;
+		token=_lire_token();
+		if(_multdivaux()){
+			result=true;
+		}else {resultat =false;}
+	}else {resultat =false;}
+	return result;
+}
+
+bool _multdivaux(){
+	bool result;
+	if ( (token == PLUS) || (token == MINUS) || (token == PVIRG) || (token == PCLOSE) ){
+		result=true;
+		token=_lire_token();
+	}else if(token=MULT){
+		result=true;
+		token=_lire_token();
+		if(_multdiv()){
+			result=true;
+		}else {resultat =false;}
+	}else {	if(token=DIV){
+		result=true;
+		token=_lire_token();
+		if(_multdiv()){
+			result=true;
+		}else {resultat =false;}
+	}
+	return result;
+}
+
+bool _aux(){
+	bool result;
+	if ( token == INUMBER ){
+		result=true;
+		token=_lire_token();
+		} else if ( token == DNUMBER ){
+			result=true;
+			token=_lire_token();
+		} else if ( token == IDF ){
+			result=true;
+			token=_lire_token();
+		}else if ( token == POPEN){
+			result=true;
+			token=_lire_token();
+			if (_addsub()){
+				result=true;
+				token=_lire_token();
+				if ( token == PCLOSE){
+					result=true;
+
+				}else {resultat =false;}
+			}else {resultat =false;}
+		}else {resultat =false;}
+	}else {resultat =false;}
+	return result;
+}
 
 int main(){
 	creer_file_erreur();
