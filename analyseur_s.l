@@ -72,7 +72,10 @@ CSTRING \"[^"]*\"
 "when"          return WHEN;
 "case"          return CASE;
 ">"            return SUP;
-"<"             return INF;       
+"<"             return INF;
+
+"("         return PCLOSE;
+")"         return POPEN;
 
 {IDF}        	 return IDF;     
 {DNUMBER}	   return DNUMBER;     
