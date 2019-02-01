@@ -21,8 +21,8 @@ CSTRING \"[^"]*\"
 "int" 			        return INT;
 "bool" 			        return BOOL;
 "float" 		        return FLOAT;
-"true" 			        return TRUE;
-"false" 		        return FALSE;
+"true" 			        return B_TRUE;
+"false" 		        return B_FALSE;
 "Character"             return CHAR;
 "String"                return STRING;
 "if"			        return IF;
@@ -60,13 +60,7 @@ CSTRING \"[^"]*\"
 "push" 		return ERRORLEX;	
 "sub" 		return ERRORLEX;	
 "store"		return ERRORLEX;	
-"swap" 		return ERRORLEX;	
-
-{IDF}        	 return IDF;     
-{DNUMBER}	   return DNUMBER;     
-{INUMBER}		return INUMBER;                      
-{CHARACTER}     return CHARACTER;          
-{CSTRING}    return CSTRING;
+"swap" 		return ERRORLEX;
 
 "while"			return WHILE;
 "in"			return IN;
@@ -74,6 +68,19 @@ CSTRING \"[^"]*\"
 "=>"			return ARROW;
 "others"		return OTHERS;
 "encase"		return ENCASE;
+"for"	        return FOR;
+"when"          return WHEN;
+"case"          return CASE;
+">"            return SUP;
+"<"             return INF;       
+
+{IDF}        	 return IDF;     
+{DNUMBER}	   return DNUMBER;     
+{INUMBER}		return INUMBER;                      
+{CHARACTER}     return CHARACTER;          
+{CSTRING}    return SSTRING;
+
+
 
 
 [\n\t ]+
