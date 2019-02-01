@@ -322,6 +322,208 @@ bool _decl_proc(){
 	return result;
 }
 
+bool _case(){
+	bool result;
+	char *name= (char*)malloc(1024);
+	char *type;
+	int line;
+	if (token == CASE){
+		result=true;
+		token=_lire_token();
+		if (token == IDF){
+			strcpy(name,yytext);
+			value = yylval;
+			lien=yylineno;
+			if (!in_tab_sym(name)){
+				creer_sm_erreur(NotDeclared, name, line);
+			}else if(!strcmp(type_var(name),"INT")){
+				creer_sm_erreur(IncompatibleForCase, line, name);
+			}
+			result=true;
+			token=_lire_token();
+			if(_case_body()){
+				result=true;
+				token=_lire_token();
+				if(token == WHEN){
+					result=true;
+					token=_lire_token();
+					if (token == OTHERS){
+						result=true;
+						token=_lire_token();
+						if (token == ARROW){
+							result=true;
+							token=_lire_token();
+							if(_liste_inst()){
+								result=true;
+								token=_lire_token();
+								if (token == PVIRG){
+									result=true;
+									token=_lire_token();
+									if (token == ENCASE){
+										result=true;
+									}else {resultat =false;}
+								}else {resultat =false;}
+							}else {resultat =false;}
+						}else {resultat =false;}
+					}else {resultat =false;}
+				}else {resultat =false;}
+			}else {resultat =false;}
+		}else {resultat =false;}
+	}else {resultat =false;}
+	return result;
+} 
+
+//CASE_BODY : when inumber => LIST_INST ;  CASE_BODYAUX
+bool _case_body(){
+	bool result;
+	if (token == WHEN){
+		result=true;
+		token=_lire_token();
+		if (token == INUMBER){
+			result=true;
+			token=_lire_token();
+			if (token == ARROW){
+				result=true;
+				token=_lire_token();
+				if(_liste_inst()){
+					result=true;
+					token=_lire_token();
+					if(token == PVIRG){
+						result=true;
+						token=_lire_token();
+						if(_case_body_aux()){
+							result=true;
+						}else {resultat =false;}
+					}else {resultat =false;}
+				}else {resultat =false;}
+			}else {resultat =false;}
+		}else {resultat =false;}
+	}else {resultat =false;}
+	return result;
+}
+
+
+
+// CASE_BODYAUX : CASE_BODY | epsilon
+
+bool _case_body_aux(){
+	bool result;
+	if(_case_body()){
+		result=true;
+	}
+
+	if(token == WHEN){
+		result=true;
+		token=_lire_token();
+		if(token == OTHERS){
+			result=true;
+			if (token == ARROW){
+				result=true;
+				token=_lire_token();
+				if(_liste_inst()){
+					result=true;
+					token=_lire_token();
+					if(token == PVIRG){
+						result=true;
+						token=_lire_token();
+					}else {resultat =false;}
+				}else {resultat =false;}
+			}else {resultat =false;}			
+		}else {resultat =false;}
+	}else {resultat =false;}
+	return result;
+}
+
+//loop_statement ::= iteration_scheme  loop sequence_of_statements end loop ;
+bool loop_statement(){
+	bool result;
+			if (iteration_scheme()){
+				result=true;
+				token=_lire_token();
+				if (token == LOOP){
+					result=true;
+					token=_lire_token();
+					if (_liste_inst()){
+						result=true;
+						token=_lire_token();
+						if (token == END){
+							result=true;
+							token=_lire_token();
+							if (token == LOOP ){
+								result=true;
+								token=_lire_token();
+									if (token == PVIRG ){
+										result=true;
+									}else {resultat =false;}
+								}else {resultat =false;}
+							}else {resultat =false;}
+						}else {resultat =false;}
+					}else {resultat =false;}
+			}	else {resultat =false;}			
+	return result;
+}
+
+//iteration_scheme ::= while condition | for loop_parameter_specification
+bool iteration_scheme(){
+	bool result;
+	if (token == WHILE){
+		result=true;
+		token=_lire_token();
+		if (_condition()){
+			result=true;
+		}else {resultat =false;}	
+	}else if (token == FOR){
+		result=true;
+		token=_lire_token();
+		if (_loop_parameter_specification()){
+			result=true;
+
+		}else {resultat =false;}
+	}else {resultat =false;}
+	return result;
+}
+
+//loop_parameter_specification ::= identifier in discrete_interval
+bool _loop_parameter_specification(){
+	bool result;
+	if (token == IDF){
+		result=true;
+		token=_lire_token();
+		if(token == IN){
+			result=true;
+			token=_lire_token();
+			if(_discrete_interval()){
+				result=true;
+			}else {resultat =false;}
+		}else {resultat =false;}
+	}else {resultat =false;}
+	return result;
+}
+
+bool _discrete_interval(){
+	bool result;
+	double line,inf,sup;
+	if (token == INUMBER){
+		inf = yylval;
+		result=true;
+		token=_lire_token();
+		if (token == TWODOTS){
+			result=true;
+			token=_lire_token();
+			if (token == INUMBER){
+				sup = yylval;
+				result=true;
+				if(inf > sup){
+					line=yylineno;
+					char * name =(char*) malloc(1024);
+					strcpy(name,"erreur");
+					creer_sm_erreur(IntervalError, line, name);
+				}
+			}else {resultat =false;}
+		}else {resultat =false;}
+	}else {resultat =false;}
+	return result;
+}
 
 
 int main(){
