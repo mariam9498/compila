@@ -116,6 +116,13 @@ bool _if_instruction_aux() ;
 bool _put();
 bool _put_line();
 
+bool _addsub();
+bool _addsubaux();
+bool _multdiv();
+bool _multdivaux();
+bool _aux();
+
+
 
 
 
