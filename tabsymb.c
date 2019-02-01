@@ -35,6 +35,26 @@ bool add_symb(char *name, char *type, bool initialized, double value, int line)
   return !exists;
 }
 
+bool in_tab_symb(char *name){
+  bool exists = false;
+  for (int i = 0; i <= tab_symb.last && !exists; i++) {
+    if (!strcmp(tab_symb.symboles[i].name, name)) {
+      exists = true;
+    }
+  }
+  return exists;
+}
+
+char * type_var(){
+    char *type=NULL;
+    for (int i = 0; i <= tab_symb.last ; i++) {
+    if (!strcmp(tab_symb.symboles[i].name, name)) {
+      type = tab_symb.symboles[i].type;
+    }
+  }
+  return type;
+}
+
 bool add_pack(typetoken pack) 
 {
   tab_pack.last ++;
