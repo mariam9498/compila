@@ -33,7 +33,18 @@ COLUMN,
 IS,
 TEXT_IO,
 INTEGER_TEXT_IO,
-FLOAT_TEXT_IO
+FLOAT_TEXT_IO,
+IF,
+THEN,
+ELSE,
+ENDIF,
+EQEQ,
+INF,
+SUP,
+INFEQ,
+SUPEQ,
+POPEN,
+PCLOSE
 } typetoken;
 
 
@@ -67,6 +78,13 @@ bool _liste_decl_aux();
 bool _decl_proc();
 bool  _list_inst();
 bool _package_aux();
+
+bool _condition(typetoken t);
+bool _if_instruction() ;
+bool _if_instruction_aux() ;
+
+bool _put();
+bool _put_line();
 
 
 
