@@ -22,6 +22,7 @@ END,
 PROCEDURE,
 DNUMBER,
 FLOAT,
+LOOP,
 CHAR,
 STRING,
 SSTRING,
@@ -39,12 +40,29 @@ THEN,
 ELSE,
 ENDIF,
 EQEQ,
+EQ,
+DEUXPOINT,
 INF,
 SUP,
 INFEQ,
 SUPEQ,
 POPEN,
-PCLOSE
+PCLOSE,
+WHILE,
+IN,
+TWODOTS,
+ARROW,
+OTHERS,
+ENCASE,
+CASE,
+FOR,
+WHEN,
+PRINT,
+PLUS,
+MINUS,
+MULT,
+DIV,
+ERRORLEX
 } typetoken;
 
 
@@ -63,6 +81,7 @@ extern char *yytext;
 extern int yylineno;
 
 
+
 void set_idf_attributes(char *name, int line);
 void set_number_attributes(double value);
 void set_character_attributes(char* value);
@@ -78,6 +97,15 @@ bool _liste_decl_aux();
 bool _decl_proc();
 bool  _list_inst();
 bool _package_aux();
+
+
+bool loop_statement();
+bool _case_body();
+bool _case();
+bool _case_body_aux();
+bool iteration_scheme();
+bool _loop_parameter_specification();
+bool _discrete_interval();
 
 bool _condition(typetoken t);
 bool _if_instruction() ;
