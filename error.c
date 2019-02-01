@@ -34,9 +34,6 @@ void afficher_sm_erreurs()
         case PackNotExist:
             puts("package incorrecte\n");
             break;
-	case SousPackNotExist:
-            puts("sous package incorrecte\n");
-            break;
         }
        
         }
