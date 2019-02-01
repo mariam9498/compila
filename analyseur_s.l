@@ -25,6 +25,9 @@ CSTRING \"[^"]*\"
 "false" 		        return FALSE;
 "Character"             return CHAR;
 "String"                return STRING;
+"if"			        return IF;
+"then"			        return THEN;
+"else"			        return ELSE;
 "loop"                  return LOOP;
 "end"                   return END;
 ":="                    return EQ;
@@ -37,22 +40,6 @@ CSTRING \"[^"]*\"
 
 "with"                   return WITH;
 "use"                    return USE;
-
-
-"="                 return EQEQ;
-"<"                 return INF;
-">"                 return SUP;
-"<="                 return INFEQ;
-">="                 return SUPEQ;
-
-"if"			return IF;
-"then"			return THEN;
-"else"			return ELSE;
-"endif"                    return ENDIF;
-
-"("                    return POPEN;
-")"                    return PCLOSE;
-
 
 "is"        return IS;
 "+"			return PLUS;
@@ -80,6 +67,13 @@ CSTRING \"[^"]*\"
 {INUMBER}		return INUMBER;                      
 {CHARACTER}     return CHARACTER;          
 {CSTRING}    return CSTRING;
+
+"while"			return WHILE;
+"in"			return IN;
+".."			return TWODOTS;
+"=>"			return ARROW;
+"others"		return OTHERS;
+"encase"		return ENCASE;
 
 
 [\n\t ]+
