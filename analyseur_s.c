@@ -7,6 +7,7 @@
 #include "tabsymb.h"
 #include "error.h"
 
+
 #define debug false
 
 
@@ -133,14 +134,14 @@ bool _decl() {
     	strcpy(symbol.name, yytext);
     	symbol.line = yylineno;
 		token = _lire_token();
-		if (token == COLUMN ){
+		if (token == DEUXPOINT ){
 			result=true;
 			token = _lire_token();
 				if (_type()){
 					symbol.type = (char *) malloc((strlen(yytext) + 1) * sizeof(char));
       				strcpy(symbol.type, yytext);
 					token = _lire_token();
-					if (token == COLUMN_EQ){
+					if (token == EQ){
 						result=true;
 						token = _lire_token();
 						if (_decl_aux() == true){
@@ -242,13 +243,14 @@ bool _package(){
 						}
 				}else result = false;
 			}else result = false;
+			if(exist == false){
+        creer_sm_erreur(PackNotExist, p, tab_pack.packs[tab_pack.last].line);}
 		}else result = false;	
 
 		
-	if(exist == false){
-        creer_sm_erreur(PackNotExist, p, tab_pack.packs[tab_pack.last].line);}
+	
 
-	}else result = false;
+	
 
 	return result;
 }
@@ -321,229 +323,17 @@ bool _decl_proc(){
 	}else result = false;
 	return result;
 }
-
-bool _case(){
+//
+bool _inst(){
 	bool result;
-	char *name= (char*)malloc(1024);
-	char *type;
-	int line;
-	if (token == CASE){
+	if(_case()){
 		result=true;
-		token=_lire_token();
-		if (token == IDF){
-			strcpy(name,yytext);
-			value = yylval;
-			lien=yylineno;
-			if (!in_tab_sym(name)){
-				creer_sm_erreur(NotDeclared, name, line);
-			}else if(!strcmp(type_var(name),"INT")){
-				creer_sm_erreur(IncompatibleForCase, line, name);
-			}
-			result=true;
-			token=_lire_token();
-			if(_case_body()){
-				result=true;
-				token=_lire_token();
-				if(token == WHEN){
-					result=true;
-					token=_lire_token();
-					if (token == OTHERS){
-						result=true;
-						token=_lire_token();
-						if (token == ARROW){
-							result=true;
-							token=_lire_token();
-							if(_liste_inst()){
-								result=true;
-								token=_lire_token();
-								if (token == PVIRG){
-									result=true;
-									token=_lire_token();
-									if (token == ENCASE){
-										result=true;
-									}else {resultat =false;}
-								}else {resultat =false;}
-							}else {resultat =false;}
-						}else {resultat =false;}
-					}else {resultat =false;}
-				}else {resultat =false;}
-			}else {resultat =false;}
-		}else {resultat =false;}
-	}else {resultat =false;}
-	return result;
-} 
+	}else if (loop_statement)
+	///......en cours
 
-//CASE_BODY : when inumber => LIST_INST ;  CASE_BODYAUX
-bool _case_body(){
-	bool result;
-	if (token == WHEN){
-		result=true;
-		token=_lire_token();
-		if (token == INUMBER){
-			result=true;
-			token=_lire_token();
-			if (token == ARROW){
-				result=true;
-				token=_lire_token();
-				if(_liste_inst()){
-					result=true;
-					token=_lire_token();
-					if(token == PVIRG){
-						result=true;
-						token=_lire_token();
-						if(_case_body_aux()){
-							result=true;
-						}else {resultat =false;}
-					}else {resultat =false;}
-				}else {resultat =false;}
-			}else {resultat =false;}
-		}else {resultat =false;}
-	}else {resultat =false;}
-	return result;
+
+return result;
 }
-
-
-
-// CASE_BODYAUX : CASE_BODY | epsilon
-
-bool _case_body_aux(){
-	bool result;
-	if(_case_body()){
-		result=true;
-	}
-
-	if(token == WHEN){
-		result=true;
-		token=_lire_token();
-		if(token == OTHERS){
-			result=true;
-			if (token == ARROW){
-				result=true;
-				token=_lire_token();
-				if(_liste_inst()){
-					result=true;
-					token=_lire_token();
-					if(token == PVIRG){
-						result=true;
-						token=_lire_token();
-					}else {resultat =false;}
-				}else {resultat =false;}
-			}else {resultat =false;}			
-		}else {resultat =false;}
-	}else {resultat =false;}
-	return result;
-}
-
-//loop_statement ::= iteration_scheme  loop sequence_of_statements end loop ;
-bool loop_statement(){
-	bool result;
-			if (iteration_scheme()){
-				result=true;
-				token=_lire_token();
-				if (token == LOOP){
-					result=true;
-					token=_lire_token();
-					if (_liste_inst()){
-						result=true;
-						token=_lire_token();
-						if (token == END){
-							result=true;
-							token=_lire_token();
-							if (token == LOOP ){
-								result=true;
-								token=_lire_token();
-									if (token == PVIRG ){
-										result=true;
-									}else {resultat =false;}
-								}else {resultat =false;}
-							}else {resultat =false;}
-						}else {resultat =false;}
-					}else {resultat =false;}
-			}	else {resultat =false;}			
-	return result;
-}
-
-//iteration_scheme ::= while condition | for loop_parameter_specification
-bool iteration_scheme(){
-	bool result;
-	if (token == WHILE){
-		result=true;
-		token=_lire_token();
-		if (_condition()){
-			result=true;
-		}else {resultat =false;}	
-	}else if (token == FOR){
-		result=true;
-		token=_lire_token();
-		if (_loop_parameter_specification()){
-			result=true;
-
-		}else {resultat =false;}
-	}else {resultat =false;}
-	return result;
-}
-
-//loop_parameter_specification ::= identifier in discrete_interval
-bool _loop_parameter_specification(){
-	bool result;
-	if (token == IDF){
-		result=true;
-		token=_lire_token();
-		if(token == IN){
-			result=true;
-			token=_lire_token();
-			if(_discrete_interval()){
-				result=true;
-			}else {resultat =false;}
-		}else {resultat =false;}
-	}else {resultat =false;}
-	return result;
-}
-
-bool _discrete_interval(){
-	bool result;
-	double line,inf,sup;
-	if (token == INUMBER){
-		inf = yylval;
-		result=true;
-		token=_lire_token();
-		if (token == TWODOTS){
-			result=true;
-			token=_lire_token();
-			if (token == INUMBER){
-				sup = yylval;
-				result=true;
-				if(inf > sup){
-					line=yylineno;
-					char * name =(char*) malloc(1024);
-					strcpy(name,"erreur");
-					creer_sm_erreur(IntervalError, line, name);
-				}
-			}else {resultat =false;}
-		}else {resultat =false;}
-	}else {resultat =false;}
-	return result;
-}
-
-
-
-//CONDITION_DE_TEST
-bool _condition(typetoken t){
-	bool result = false;
-
-	if (token == IDF || _const()){
-		token = _lire_token();
-		if(t == EQEQ || t == INFEQ || t == INF || t == SUPEQ || t == SUP){
-			token = _lire_token();
-			if (token == IDF || _const()){
-				result = true;
-			}
-		}
-	}
-
-	return result;	
-}
-
 // IF_INSTRUCTION : if exp CONDITION_DE_TEST exp LIST_INST IF_INSTRUCTION_AUX ;
 bool _if_instruction(){
 	bool result = false;
@@ -553,7 +343,7 @@ bool _if_instruction(){
 				token = _lire_token();
 					if (token == THEN){
 						token = _lire_token();
-						if (_liste_inst()){
+						if (_list_inst()){
 							token = _lire_token();
 							if (_if_instruction_aux()){
 								result = true;
@@ -572,16 +362,18 @@ bool _if_instruction_aux(){
 	bool result = false;
 	if (token == ELSE){
 		token = _lire_token();
-		if (_liste_inst()){
+		if (_list_inst()){
 			token = _lire_token();
 			if(token == ENDIF){
+				token = _lire_token();
 				if(token == PVIRG){
 					result = true;
 				}
 			}
 		}
 	}
-	else(token == ENDIF){
+	else if(token == ENDIF){
+		token = _lire_token();
 		if(token == PVIRG){
 			result = true;
 		}
@@ -592,11 +384,11 @@ bool _if_instruction_aux(){
 //fonction put
 bool _put(){
 	bool result = false;
-	if (token == PUT){
+	if (token == PRINT){
 		token = _lire_token();
 		if (token == POPEN){
 			token = _lire_token();
-			if (token == IDF || token == DNUMBER || token == INUMBER || token == CHARACTER || token == CSTRING){
+			if (token == IDF || token == DNUMBER || token == INUMBER || token == CHARACTER || token == SSTRING){
 				token = _lire_token();
 				if (token == PCLOSE){
 					token = _lire_token();
@@ -613,11 +405,11 @@ bool _put(){
 //fonction put_line
 bool _put_line(){
 	bool result = false;
-	if (token == PUT){
+	if (token == PRINT){
 		token = _lire_token();
 		if (token == POPEN){
 			token = _lire_token();
-			if (token == IDF || token == DNUMBER || token == INUMBER || token == CHARACTER || token == CSTRING){
+			if (token == IDF || token == DNUMBER || token == INUMBER || token == CHARACTER || token == SSTRING){
 				token = _lire_token();
 				if (token == PCLOSE){
 					token = _lire_token();
@@ -630,8 +422,243 @@ bool _put_line(){
 	}
 	return result;
 }
+bool _case(){
+	bool result;
+	char *name= (char*)malloc(1024);
+	//char *type= (char*)malloc(1024);
+	int line;
+	//int value;
+	if (token == CASE){
+		result=true;
+		token=_lire_token();
+		if (token == IDF){
+			strcpy(name,yytext);
+			//value = yylval;
+			line=yylineno;
+			if (!in_tab_symb(name)){
+				creer_sm_erreur(NotDeclared, name, line);
+			}else if(!strcmp(type_var(name),"int")){
+				creer_sm_erreur(IncompatibleForCase, name, line);
+			}
+			result=true;
+			token=_lire_token();
+			if(_case_body()){
+				result=true;
+				token=_lire_token();
+				if(token == WHEN){
+					result=true;
+					token=_lire_token();
+					if (token == OTHERS){
+						result=true;
+						token=_lire_token();
+						if (token == ARROW){
+							result=true;
+							token=_lire_token();
+							if(_list_inst()){
+								result=true;
+								token=_lire_token();
+								if (token == PVIRG){
+									result=true;
+									token=_lire_token();
+									if (token == ENCASE){
+										result=true;
+									}else {result =false;}
+								}else {result =false;}
+							}else {result =false;}
+						}else {result =false;}
+					}else {result =false;}
+				}else {result =false;}
+			}else {result =false;}
+		}else {result =false;}
+	}else {result =false;}
+	return result;
+} 
+
+//CASE_BODY : when inumber => LIST_INST ;  CASE_BODYAUX
+bool _case_body(){
+	bool result;
+	if (token == WHEN){
+		result=true;
+		token=_lire_token();
+		if (token == INUMBER){
+			result=true;
+			token=_lire_token();
+			if (token == ARROW){
+				result=true;
+				token=_lire_token();
+				if(_list_inst()){
+					result=true;
+					token=_lire_token();
+					if(token == PVIRG){
+						result=true;
+						token=_lire_token();
+						if(_case_body_aux()){
+							result=true;
+						}else {result =false;}
+					}else {result =false;}
+				}else {result =false;}
+			}else {result =false;}
+		}else {result =false;}
+	}else {result =false;}
+	return result;
+}
 
 
+
+// CASE_BODYAUX : CASE_BODY | epsilon
+
+bool _case_body_aux(){
+	bool result;
+	if(_case_body()){
+		result=true;
+	}
+
+	if(token == WHEN){
+		result=true;
+		token=_lire_token();
+		if(token == OTHERS){
+			result=true;
+			token=_lire_token();
+			if(token == ARROW){
+				result=true;
+				token=_lire_token();
+				if(_list_inst()){
+					result=true;
+					token=_lire_token();
+					if(token == PVIRG){
+						result=true;
+						token=_lire_token();
+					}else {result =false;}
+				}else {result =false;}
+			}else {result =false;}			
+		}else {result =false;}
+	}else {result =false;}
+	return result;
+}
+
+//loop_statement ::= iteration_scheme  loop sequence_of_statements end loop ;
+bool loop_statement(){
+	bool result;
+			if (iteration_scheme()){
+				result=true;
+				token=_lire_token();
+				if (token == LOOP){
+					result=true;
+					token=_lire_token();
+					if (_list_inst()){
+						result=true;
+						token=_lire_token();
+						if (token == END){
+							result=true;
+							token=_lire_token();
+							if (token == LOOP ){
+								result=true;
+								token=_lire_token();
+									if (token == PVIRG ){
+										result=true;
+									}else {result =false;}
+								}else {result =false;}
+							}else {result =false;}
+						}else {result =false;}
+					}else {result =false;}
+			}	else {result =false;}			
+	return result;
+}
+
+//iteration_scheme ::= while condition | for loop_parameter_specification
+bool iteration_scheme(){
+	bool result;
+	if (token == WHILE){
+		result=true;
+		token=_lire_token();
+		if (_condition(token)){
+			result=true;
+		}else {result =false;}	
+	}else if (token == FOR){
+		result=true;
+		token=_lire_token();
+		if (_loop_parameter_specification()){
+			result=true;
+
+		}else {result =false;}
+	}else {result =false;}
+	return result;
+}
+
+//loop_parameter_specification ::= identifier in discrete_interval
+bool _loop_parameter_specification(){
+	bool result;
+	if (token == IDF){
+		result=true;
+		token=_lire_token();
+		if(token == IN){
+			result=true;
+			token=_lire_token();
+			if(_discrete_interval()){
+				result=true;
+			}else {result =false;}
+		}else {result =false;}
+	}else {result =false;}
+	return result;
+}
+
+bool _discrete_interval(){
+	bool result;
+	char * name =(char*) malloc(1024);
+	int line;
+	int inf,sup;
+	if (token == INUMBER){
+		inf = atoi(yytext);
+		result=true;
+		token=_lire_token();
+		if (token == TWODOTS){
+			result=true;
+			token=_lire_token();
+			if (token == INUMBER){
+				sup = atoi(yytext);
+				result=true;
+				if(inf > sup){
+					line=yylineno;
+					strcpy(name,"erreur");
+					creer_sm_erreur(IntervalError,name,line);
+				}
+			}else {result =false;}
+		}else {result =false;}
+	}else {result =false;}
+	return result;
+}
+
+/*bool _condition(){
+	bool result;
+	if (token == IDF){
+		result=true;
+		token=_lire_token();
+		if(token == SUP || token == INF || token == EQEQ ){
+			result=true;
+			token=_lire_token();
+			if (token == INUMBER){
+				result=true;
+		    }else result =false;
+	    }else result =false;
+	 }else result =false;
+	return result;
+}*/
+//CONDITION_DE_TEST
+bool _condition(typetoken t){
+	bool result = false;
+
+	if (token == IDF || _const()){
+		token = _lire_token();
+		if(t == EQEQ || t == INFEQ || t == INF || t == SUPEQ || t == SUP){
+			token = _lire_token();
+			if (token == IDF || _const()){
+				result = true;
+			}
+		}
+	}
+
+	return result;	
+}
 
 int main(){
 	creer_file_erreur();
