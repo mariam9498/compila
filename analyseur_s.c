@@ -659,6 +659,34 @@ bool _condition(typetoken t){
 
 	return result;	
 }
+
+boolean _addsub(){
+   boolean result;
+
+	if (_multdiv()){
+		token = _lire_token();
+		result = _addsubaux();
+	}else result = false;
+   
+   return result;
+}
+
+
+boolean _addsubaux(){
+   boolean result;
+   
+	if ( (token == PVIRG) || (token == PCLOSE) ){
+		result = true;
+	}else if (token == PLUS) {
+			token = _lire_token();
+			result = _addsub();
+	} else if (token == MINUS) {
+			token = _lire_token();
+			result = _addsub();
+	} else {result = false;}
+	
+}
+
 bool _multdiv(){
 	bool result;
 	if(_aux()){
