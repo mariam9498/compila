@@ -62,6 +62,8 @@ PLUS,
 MINUS,
 MULT,
 DIV,
+PCLOSE,
+POPEN,
 ERRORLEX
 } typetoken;
 
