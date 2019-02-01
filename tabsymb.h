@@ -58,3 +58,6 @@ extern bool check_type_assignment(char *type, typetoken value_type);
 
 bool add_pack(typetoken pack) ;
 bool add_sous_pack(typetoken sous_pack) ;
+
+bool in_tab_symb(char *name);
+char * type_var(char* name);
