@@ -526,6 +526,113 @@ bool _discrete_interval(){
 }
 
 
+
+//CONDITION_DE_TEST
+bool _condition(typetoken t){
+	bool result = false;
+
+	if (token == IDF || _const()){
+		token = _lire_token();
+		if(t == EQEQ || t == INFEQ || t == INF || t == SUPEQ || t == SUP){
+			token = _lire_token();
+			if (token == IDF || _const()){
+				result = true;
+			}
+		}
+	}
+
+	return result;	
+}
+
+// IF_INSTRUCTION : if exp CONDITION_DE_TEST exp LIST_INST IF_INSTRUCTION_AUX ;
+bool _if_instruction(){
+	bool result = false;
+	if (token == IF){
+		token = _lire_token();
+			if (_condition(token)){
+				token = _lire_token();
+					if (token == THEN){
+						token = _lire_token();
+						if (_liste_inst()){
+							token = _lire_token();
+							if (_if_instruction_aux()){
+								result = true;
+							}
+						}
+					}
+			}			
+	}
+
+	return result;
+}
+
+
+// IF_INSTRUCTION_AUX : else LIST_INST endif | endif;
+bool _if_instruction_aux(){
+	bool result = false;
+	if (token == ELSE){
+		token = _lire_token();
+		if (_liste_inst()){
+			token = _lire_token();
+			if(token == ENDIF){
+				if(token == PVIRG){
+					result = true;
+				}
+			}
+		}
+	}
+	else(token == ENDIF){
+		if(token == PVIRG){
+			result = true;
+		}
+	}
+	return result;
+}
+
+//fonction put
+bool _put(){
+	bool result = false;
+	if (token == PUT){
+		token = _lire_token();
+		if (token == POPEN){
+			token = _lire_token();
+			if (token == IDF || token == DNUMBER || token == INUMBER || token == CHARACTER || token == CSTRING){
+				token = _lire_token();
+				if (token == PCLOSE){
+					token = _lire_token();
+					if (token == PVIRG){
+						result = true;
+					}
+				}
+			}
+		}
+	}
+	return result;
+}
+
+//fonction put_line
+bool _put_line(){
+	bool result = false;
+	if (token == PUT){
+		token = _lire_token();
+		if (token == POPEN){
+			token = _lire_token();
+			if (token == IDF || token == DNUMBER || token == INUMBER || token == CHARACTER || token == CSTRING){
+				token = _lire_token();
+				if (token == PCLOSE){
+					token = _lire_token();
+					if (token == PVIRG){
+						result = true;
+					}
+				}
+			}
+		}
+	}
+	return result;
+}
+
+
+
 int main(){
 	creer_file_erreur();
   	init_tab_sym();
