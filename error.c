@@ -34,9 +34,16 @@ void afficher_sm_erreurs()
         case PackNotExist:
             puts("package incorrecte\n");
             break;
-	case SousPackNotExist:
-            puts("sous package incorrecte\n");
-	break;
+        case NotDeclared:
+            puts(": variable non déclarée\n");
+            break;
+        case IncompatibleForCase:
+            puts("non compatible avec case\n");
+            break;
+        case IntervalError:
+            puts("intervalle non valide\n");
+            break;
+        
         }
        
         }
