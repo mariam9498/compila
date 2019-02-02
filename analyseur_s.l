@@ -35,6 +35,7 @@ CSTRING \"[^"]*\"
 ";"                     return PVIRG;
 "="                     return EQEQ;
 "put"                   return PRINT;
+"put_line"                   return PRINTLINE;
 
 "procedure"				 return PROCEDURE;
 
@@ -73,9 +74,8 @@ CSTRING \"[^"]*\"
 "case"          return CASE;
 ">"            return SUP;
 "<"             return INF;
-
-"("         return PCLOSE;
-")"         return POPEN;
+"<="             return INFEQ;
+">="             return SUPEQ;       
 
 {IDF}        	 return IDF;     
 {DNUMBER}	   return DNUMBER;     
