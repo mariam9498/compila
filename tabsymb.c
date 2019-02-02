@@ -57,7 +57,7 @@ char * type_var(char* name){
 
 bool add_pack(typetoken pack) 
 {
-  tab_pack.last ++;
+  tab_pack.last++;
   tab_pack.packs[tab_pack.last].name = pack;
 }
 
