@@ -3,10 +3,8 @@
 #include <stdbool.h>
 #include <stdlib.h>
 // #include "analyseur_s.h"
-
 #include "tabsymb.h"
 #include "error.h"
-
 
 #define debug false
 
@@ -14,13 +12,12 @@
 extern int yylex();
 typetoken token;
 symb symbol;
+
 // lit le prochain token s'il n'a pas déjà été lu par le prédicat d'un nullable
 typetoken _lire_token(){
 		return (typetoken) yylex();
 	
 }
-
-
 
 void init_packs() {
   packs = (pack*) malloc(3*sizeof(pack));
@@ -67,15 +64,9 @@ void init_packs() {
 
 */
 
-
-bool _list_inst(){
-	return true;
-}
-
-
-
 // TYPE : int | bool |float | char | string ; 
 bool _type() {
+
 	bool result;
 	if (debug) printf("type()\n");
 
@@ -88,27 +79,24 @@ bool _type() {
 
 	if (debug) printf("out of type()\n");
 	return result;
+
 }
 
 //CONST : inumber | dnumber | true | false | character | string; 
 bool _const() {
+
 	bool result;
 	if (debug) printf("const()\n");
 
 	if (token == INUMBER) {
-		
 		result = true;	
 	}else if (token == DNUMBER) {
-		
 		result = true;
 	}else if (token == CHARACTER) {
-		
 		result = true;
 	}else if (token == SSTRING) {
 		result = true;
-	}	
-     else if ( (token == B_TRUE) || (token == B_FALSE) ){
-		
+	}else if ( (token == B_TRUE) || (token == B_FALSE) ){
 		result = true;	
 	} else result = false;
 
@@ -116,19 +104,9 @@ bool _const() {
 	return result;
 }
 
-
-
-
-
-
-
-
-
-
 // DECL : idf TYPE DECL_AUX
 bool _decl() {
 	bool result;
-
 	if ( token == IDF ) {
 		symbol.name = (char *) malloc((strlen(yytext) + 1) * sizeof(char));
     	strcpy(symbol.name, yytext);
@@ -140,14 +118,12 @@ bool _decl() {
 				if (_type()){
 					symbol.type = (char *) malloc((strlen(yytext) + 1) * sizeof(char));
       				strcpy(symbol.type, yytext);
+					  printf("%s",symbol.type);
 					token = _lire_token();
-					if (token == EQ){
-						result=true;
-						token = _lire_token();
-						if (_decl_aux() == true){
+						if (_decl_aux()){
 							result=true;
 						}else result = false;
-					}else result = false;
+					
 				}else result = false;
 		}else result = false;
 	}else result = false;
@@ -158,47 +134,47 @@ bool _decl() {
 bool _decl_aux() {
 	bool result;
 	
-	if ( token == PVIRG ) { 
+	if ( token == PVIRG ) {
+		printf("ddd") ; 
 		symbol.initialized = false;
     if (!add_symb(symbol.name, symbol.type, symbol.initialized, symbol.value, symbol.line)) {
       creer_sm_erreur(AlreadyDeclared, symbol.name, symbol.line);}
 		result = true; 
-	}else if (_const()) {
-		symbol.initialized = true;
-      if (!check_type_assignment(symbol.type, token)) {
-        creer_sm_erreur(NoneInitialized, symbol.name, symbol.line);}
-	else {
-        if (!strcasecmp(symbol.type, "bool")) {
-          if (!strcasecmp(yytext, "true")) {
-            symbol.value = 1.0;
-          } else {
-            symbol.value = 0.0;
-          }
-        } else {
-          symbol.value = atof(yytext);
-        }
-      }
-		token = _lire_token();
-		if (token == PVIRG) {
-			result = true;
-        if (!add_symb(symbol.name, symbol.type, symbol.initialized, symbol.value, symbol.line)) {
-        creer_sm_erreur(AlreadyDeclared, symbol.name, symbol.line);
-        }
-		} else result = false;
-	}else result = false;
-
+	}else if (token == EQ){
+						result=true;
+						token = _lire_token();
+						if(_const()) {
+								symbol.initialized = true;
+							if (!check_type_assignment(symbol.type, token)) {
+								creer_sm_erreur(NoneInitialized, symbol.name, symbol.line);}
+							else {
+								if (!strcasecmp(symbol.type, "bool")) {
+								if (!strcasecmp(yytext, "true")) {
+									symbol.value = 1.0;
+								} else {
+									symbol.value = 0.0;
+								}
+								} else {
+								symbol.value = atof(yytext);
+								}
+							}
+								token = _lire_token();
+								if (token == PVIRG) {
+									result = true;
+								if (!add_symb(symbol.name, symbol.type, symbol.initialized, symbol.value, symbol.line)) {
+								creer_sm_erreur(AlreadyDeclared, symbol.name, symbol.line);
+								}
+								} else result = false;
+							}else result = false;
+				}else result = false;
 	
 	return result;
 }
 
 bool _package_aux(){
 	bool result=false;
-	token=_lire_token();
-	if(_package()){
-		result=true;
-	}else {result=false;}
-	if(_decl_proc()){
-
+	
+	if(_package()||token==PROCEDURE){
 		result=true;
 	}else {result=false;}
 	return result;
@@ -215,26 +191,31 @@ bool _package(){
 		add_pack(token);
 		strcpy(p, yytext);
     
-
 		if (token==TEXT_IO){
       		tab_pack.packs[tab_pack.last].valide = 1;
 			tab_pack.packs[tab_pack.last].line = yylineno;
 			exist = true;
 			result=true;
-			
+			printf("PPP\n");
 			token = _lire_token();
 			if(token==PVIRG){
 				result=true;
+				printf("PPP\n");
 				token=_lire_token();
 				if(token==USE){
+					printf("PPP\n");
 					result=true;
 					token = _lire_token();
 					if(token==TEXT_IO){
+						printf("PPP\n");
 						token = _lire_token();
 						result=true;
 						if(token==PVIRG){
+							printf("PPP\n");
 							result=true;
+							token=_lire_token();
 							if(_package_aux()){
+								printf("PPP\n");
 							result=true;
 							}else result = false;
 						}else result = false;
@@ -242,30 +223,81 @@ bool _package(){
         				creer_sm_erreur(PackNotExist, p, tab_pack.packs[tab_pack.last].line);}
 						}
 				}else result = false;
-			}else result = false;
-			if(exist == false){
-        creer_sm_erreur(PackNotExist, p, tab_pack.packs[tab_pack.last].line);}
-		}else result = false;	
+			}else if(token==INTEGER_TEXT_IO){
 
+				tab_pack.packs[tab_pack.last].valide = 1;
+				tab_pack.packs[tab_pack.last].line = yylineno;
+				exist = true;
+				result=true;
+			
+				token = _lire_token();
+				if(token==PVIRG){
+					result=true;
+					token=_lire_token();
+					if(token==USE){
+						result=true;
+						token = _lire_token();
+						if(token==INTEGER_TEXT_IO){
+						 	token = _lire_token();
+							result=true;
+							if(token==PVIRG){
+								result=true;
+								if(_package_aux()){
+								result=true;
+								}else result = false;
+							}else result = false;
+						}else{ result = false;
+        				creer_sm_erreur(PackNotExist, p, tab_pack.packs[tab_pack.last].line);}
+					}else result = false;
+
+				}
+			}else if (token==FLOAT_TEXT_IO){
+
+				tab_pack.packs[tab_pack.last].valide = 1;
+				tab_pack.packs[tab_pack.last].line = yylineno;
+				exist = true;
+				result=true;
+			
+				token = _lire_token();
+				if(token==PVIRG){
+					result=true;
+					token=_lire_token();
+					if(token==USE){
+						result=true;
+						token = _lire_token();
+						if(token==FLOAT_TEXT_IO){
+						 	token = _lire_token();
+							result=true;
+							if(token==PVIRG){
+								result=true;
+								if(_package_aux()){
+								result=true;
+								}else result = false;
+							}else result = false;
+						}else{ result = false;
+        				creer_sm_erreur(PackNotExist, p, tab_pack.packs[tab_pack.last].line);}
+					}else result = false;
 		
+		}
+	}
+	if(exist == false){
+        	creer_sm_erreur(PackNotExist, p, tab_pack.packs[tab_pack.last].line);
+	}
+}
 	
 
-	
-
-	return result;
+return result;
 }
 
 // LISTE_DECL : DECL LISTE_DECLAUX
 bool _liste_decl(){
 	bool result;
-	if (debug) printf("liste_decl()\n");
-
+	printf("liste_decl()\n");
 	if (_decl()){
 		token = _lire_token();
 		result = _liste_decl_aux();
 	}else result = false;
-
-	if (debug) printf("out of liste_decl()\n");
+	printf("out of liste_decl()\n");
 	return result;
 }
 
@@ -276,10 +308,7 @@ bool _liste_decl(){
 bool _liste_decl_aux(){
 	bool result;
 	if (debug) printf("liste_decl_aux()\n");
-
-	if (token == BEG_IN){
-		result = true;
-	}else if (_liste_decl()){
+	if (_liste_decl()||token==BEG_IN){
 		result = true;
 	}else{
 		/* printf("TOKE = %d\n",token);
@@ -293,7 +322,6 @@ bool _liste_decl_aux(){
 
 bool _decl_proc(){
 	bool result;
-	
 	if (token == PROCEDURE){
 		result=true;
 		token=_lire_token();
@@ -301,23 +329,7 @@ bool _decl_proc(){
 			result=true;
 			token=_lire_token();
 			if(token == IS){
-			result=true;
-			token=_lire_token();
-				if(_liste_decl() || token == BEG_IN ){
 				result=true;
-				token=_lire_token();
-					if (_list_inst()){
-						result=true;
-						token=_lire_token();
-						if (token==END){
-							result=true;
-							token=_lire_token();
-							if (token==IDF||token ==PVIRG){
-								result=true;
-							}else result = false;
-						}else result = false;
-					}else result = false;
-				}else result = false;
 			}else result = false;
 		}else result = false;
 	}else result = false;
@@ -327,13 +339,44 @@ bool _decl_proc(){
 bool _inst(){
 	bool result;
 	if(_case()){
+		printf("CCC\n");
 		result=true;
-	}else if (loop_statement)
-	///......en cours
+	}else if (loop_statement()){
+		result=true;
+	}else if(_put()){
+		printf("CCC\n");
 
+		result=true;
+	}else if(_put_line()){
+		result=true;
+	}else if(_if_instruction()){
+		result=true;
+	}else result=false;
 
 return result;
 }
+
+bool  _list_inst(){
+
+	bool result=false;
+	if(_inst()){
+		printf("CCC\n");
+		result = true;
+		if(_list_inst_aux()||token==END){
+			result = true;
+		}else result=false;
+	}else result=false;
+	return result;
+ }
+
+bool _list_inst_aux(){
+
+	bool result=false;
+	if(_inst()){
+		result = true;
+	}else result=false;
+	return result;
+ }
 // IF_INSTRUCTION : if exp CONDITION_DE_TEST exp LIST_INST IF_INSTRUCTION_AUX ;
 bool _if_instruction(){
 	bool result = false;
@@ -405,7 +448,7 @@ bool _put(){
 //fonction put_line
 bool _put_line(){
 	bool result = false;
-	if (token == PRINT){
+	if (token == PRINTLINE){
 		token = _lire_token();
 		if (token == POPEN){
 			token = _lire_token();
@@ -427,18 +470,25 @@ bool _case(){
 	char *name= (char*)malloc(1024);
 	//char *type= (char*)malloc(1024);
 	int line;
+
 	//int value;
 	if (token == CASE){
+		printf("CCC\n");
 		result=true;
 		token=_lire_token();
 		if (token == IDF){
+			printf("CCC\n");
 			strcpy(name,yytext);
 			//value = yylval;
 			line=yylineno;
+			printf("%s",type_var(name)) ;
 			if (!in_tab_symb(name)){
 				creer_sm_erreur(NotDeclared, name, line);
-			}else if(!strcmp(type_var(name),"int")){
-				creer_sm_erreur(IncompatibleForCase, name, line);
+				
+			}else
+				{printf("%s",type_var(name)) ;
+				if(!strcmp(type_var(name),"int")){
+				creer_sm_erreur(IncompatibleForCase, name, line);}
 			}
 			result=true;
 			token=_lire_token();
@@ -446,6 +496,7 @@ bool _case(){
 				result=true;
 				token=_lire_token();
 				if(token == WHEN){
+					printf("CCC\n");
 					result=true;
 					token=_lire_token();
 					if (token == OTHERS){
@@ -660,8 +711,8 @@ bool _condition(typetoken t){
 	return result;	
 }
 
-boolean _addsub(){
-   boolean result;
+bool _addsub(){
+   bool result;
 
 	if (_multdiv()){
 		token = _lire_token();
@@ -672,8 +723,8 @@ boolean _addsub(){
 }
 
 
-boolean _addsubaux(){
-   boolean result;
+bool _addsubaux(){
+   bool result;
    
 	if ( (token == PVIRG) || (token == PCLOSE) ){
 		result = true;
@@ -683,7 +734,8 @@ boolean _addsubaux(){
 	} else if (token == MINUS) {
 			token = _lire_token();
 			result = _addsub();
-	} else {result = false;}
+	} else 
+	result = false;
 	
 }
 
@@ -694,34 +746,35 @@ bool _multdiv(){
 		token=_lire_token();
 		if(_multdivaux()){
 			result=true;
-		}else {resultat =false;}
-	}else {resultat =false;}
+		}else {result =false;}
+	}else {result =false;}
 	return result;
 }
 
 bool _multdivaux(){
-	bool result;
+	bool result=false;
 	if ( (token == PLUS) || (token == MINUS) || (token == PVIRG) || (token == PCLOSE) ){
 		result=true;
 		token=_lire_token();
-	}else if(token=MULT){
+	}else if(token==MULT){
 		result=true;
 		token=_lire_token();
 		if(_multdiv()){
 			result=true;
-		}else {resultat =false;}
-	}else {	if(token=DIV){
+		}else {result =false;}
+	}else {	if(token==DIV){
 		result=true;
 		token=_lire_token();
 		if(_multdiv()){
 			result=true;
-		}else {resultat =false;}
+		}else {result =false;}
 	}
 	return result;
 }
+}
 
 bool _aux(){
-	bool result;
+	bool result=false;
 	if ( token == INUMBER ){
 		result=true;
 		token=_lire_token();
@@ -740,23 +793,59 @@ bool _aux(){
 				if ( token == PCLOSE){
 					result=true;
 
-				}else {resultat =false;}
-			}else {resultat =false;}
-		}else {resultat =false;}
-	}else {resultat =false;}
+				}else {result =false;}
+			}else {result =false;}
+		}else {result =false;}
+	
 	return result;
+
 }
 
+bool _prog(){
+	bool result = false;
+	
+	if(_package()){
+				//printf("%s",yytext);
+		//token=_lire_token();
+		result=true;
+		if(_decl_proc()){
+				//printf("%s",yytext);
+			result=true;
+			token=_lire_token();
+			if(_liste_decl()){
+				//printf("%s",yytext);
+				result=true;
+				//token=_lire_token();
+				if (token == BEG_IN){
+				//printf("%s",yytext);
+					result = true;
+					token=_lire_token();
+					if(_list_inst()){
+						printf("%s",yytext);
+						result=true;
+						//token=_lire_token();
+										printf("%s",yytext);
+
+						if (token == END){
+							result=true;
+						}else result=false;
+					}else result=false;
+				}else result=false;
+			} else {result=false;}
+		}else {result=false;}
+	}else result=false;
+	return result;
+}
 int main(){
 	creer_file_erreur();
   	init_tab_sym();
 	token=_lire_token();
-	if(_package())
+	if(_prog())
 		printf("ok \n");
 	else
 		{printf("not ok \n");
 		afficher_sm_erreurs();
-		printf("Error package");}
+		}
 	
 	return 0;
 }
