@@ -1,0 +1,8 @@
+case var is
+when c  => put("deux");
+when others => put("");
+encase
+for var in 4..2 loop
+   Nb := Nb + 1 ; 
+   Put('#') ; 
+end loop ;
