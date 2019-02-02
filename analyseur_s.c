@@ -220,7 +220,7 @@ bool _package(){
 							}else result = false;
 						}else result = false;
 					}else{ result = false;
-        				creer_sm_erreur(PackNotExist, p, tab_pack.packs[tab_pack.last].line);}
+        				creer_sm_erreur(SousPackNotExist, p, tab_pack.packs[tab_pack.last].line);}
 						}
 				}else result = false;
 			}else if(token==INTEGER_TEXT_IO){
@@ -247,7 +247,7 @@ bool _package(){
 								}else result = false;
 							}else result = false;
 						}else{ result = false;
-        				creer_sm_erreur(PackNotExist, p, tab_pack.packs[tab_pack.last].line);}
+        				creer_sm_erreur(SousPackNotExist, p, tab_pack.packs[tab_pack.last].line);}
 					}else result = false;
 
 				}
@@ -275,7 +275,7 @@ bool _package(){
 								}else result = false;
 							}else result = false;
 						}else{ result = false;
-        				creer_sm_erreur(PackNotExist, p, tab_pack.packs[tab_pack.last].line);}
+        				creer_sm_erreur(SousPackNotExist, p, tab_pack.packs[tab_pack.last].line);}
 					}else result = false;
 		
 		}
