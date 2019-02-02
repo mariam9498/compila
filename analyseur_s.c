@@ -708,6 +708,7 @@ bool _discrete_interval(){
 	return result;
 }*/
 //CONDITION_DE_TEST
+/*
 bool _condition(typetoken t){
 	bool result = false;
 
@@ -719,6 +720,40 @@ bool _condition(typetoken t){
 				result = true;
 			}
 		}
+	}
+
+	return result;	
+}*/
+
+bool _condition(typetoken t){
+	bool result = false;
+	char * type1 = NULL;
+	char * type2 = NULL;
+
+	if ( (token == IDF && in_tab_symb(yytext)) || _const()){
+		if ( token == IDF ){
+			type1 = (char*)malloc(1024);
+			strcpy(type1,type_var(yytext));
+		}
+			token = _lire_token();
+			if(t == NOTEQ || t == EQEQ || t == INFEQ || t == INF || t == SUPEQ || t == SUP){
+				token = _lire_token();
+				if ( (token == IDF && in_tab_symb(yytext)) || _const()){
+					if ( token == IDF ){
+						type2 = (char*)malloc(1024);
+						strcpy(type2,type_var(yytext));
+						if(type1!=NULL && strcmp(type1,type2)!=0)
+							creer_sm_erreur(IncompatibleForCondition,yytext,yylineno);
+					}
+					result = true;
+				}else{
+					if(token == IDF && !in_tab_symb(yytext))
+						creer_sm_erreur(NotDeclared,yytext,yylineno);
+				}
+			}
+	}else{
+		if(token == IDF && !in_tab_symb(yytext))
+			creer_sm_erreur(NotDeclared,yytext,yylineno);
 	}
 
 	return result;	
