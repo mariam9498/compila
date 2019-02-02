@@ -700,7 +700,7 @@ bool _condition(typetoken t){
 
 	if (token == IDF || _const()){
 		token = _lire_token();
-		if(t == EQEQ || t == INFEQ || t == INF || t == SUPEQ || t == SUP){
+		if(t == NOTEQ || t == EQEQ || t == INFEQ || t == INF || t == SUPEQ || t == SUP){
 			token = _lire_token();
 			if (token == IDF || _const()){
 				result = true;
