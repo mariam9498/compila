@@ -639,7 +639,20 @@ bool iteration_scheme(){
 //loop_parameter_specification ::= identifier in discrete_interval
 bool _loop_parameter_specification(){
 	bool result;
+	char *name= (char*) malloc(1024);
+	int line;
 	if (token == IDF){
+		strcpy(name,yytext);
+		line=yylineno;
+		printf("%s",type_var(name)) ;
+		if (!in_tab_symb(name)){
+			creer_sm_erreur(NotDeclared, name, line);
+				
+		}else
+			{printf("%s",type_var(name)) ;
+			if(!strcmp(type_var(name),"int")){
+				creer_sm_erreur(IncompatibleForInterval, name, line);}
+			}
 		result=true;
 		token=_lire_token();
 		if(token == IN){
