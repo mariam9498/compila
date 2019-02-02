@@ -10,6 +10,7 @@ typedef enum
         AlreadyDeclared,
         NoneInitialized,
         PackNotExist,
+        SousPackNotExist,
         NotDeclared,
         IncompatibleForCase,
         IntervalError,
