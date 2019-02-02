@@ -76,6 +76,7 @@ CSTRING \"[^"]*\"
 "<"             return INF;
 "<="             return INFEQ;
 ">="             return SUPEQ;       
+"/="             return NOTEQ;   
 
 {IDF}        	 return IDF;     
 {DNUMBER}	   return DNUMBER;     
