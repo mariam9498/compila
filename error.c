@@ -40,6 +40,9 @@ void afficher_sm_erreurs()
         case IncompatibleForCase:
             puts("non compatible avec case\n");
             break;
+	case IncompatibleForCondition:
+            puts("Comparaison de deux types incompatible\n");
+            break;
         case IntervalError:
             puts("intervalle non valide\n");
             break;
