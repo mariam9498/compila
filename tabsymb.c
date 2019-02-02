@@ -49,7 +49,7 @@ char * type_var(char* name){
     char * type=(char*)malloc(1024);
     for (int i = 0; i <= tab_symb.last ; i++) {
     if (!strcmp(tab_symb.symboles[i].name, name)) {
-      type = tab_symb.symboles[i].type;
+      strcmp(type,tab_symb.symboles[i].type);
     }
   }
   return type;
