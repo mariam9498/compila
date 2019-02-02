@@ -34,6 +34,16 @@ void afficher_sm_erreurs()
         case PackNotExist:
             puts("package incorrecte\n");
             break;
+        case NotDeclared:
+            puts(": variable non déclarée\n");
+            break;
+        case IncompatibleForCase:
+            puts("non compatible avec case\n");
+            break;
+        case IntervalError:
+            puts("intervalle non valide\n");
+            break;
+        
         }
        
         }
@@ -52,5 +62,3 @@ void creer_sm_erreur(SemanticErrorType er, char* name, int line){
   queue.errors[queue.last].name = (char *) malloc((strlen(name) + 1) * sizeof(char));
   strcpy(queue.errors[queue.last].name, name);
 }
-
-
