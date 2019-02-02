@@ -43,6 +43,9 @@ void afficher_sm_erreurs()
         case IntervalError:
             puts("intervalle non valide\n");
             break;
+	case IncompatibleForInterval:
+            puts("non compatible avec l'intervalle\n");
+            break;
         
         }
        
