@@ -15,6 +15,7 @@ typedef enum
         IncompatibleForCase,
         IntervalError,
         IncompatibleForCondition,
+        IncompatibleForInterval
     } SemanticErrorType;
 
  
