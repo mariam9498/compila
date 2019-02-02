@@ -9,10 +9,11 @@ typedef enum
     {
         AlreadyDeclared,
         NoneInitialized,
-         PackNotExist,
-            NotDeclared,
+        PackNotExist,
+        NotDeclared,
         IncompatibleForCase,
-        IntervalError
+        IntervalError,
+        IncompatibleForCondition,
     } SemanticErrorType;
 
  
